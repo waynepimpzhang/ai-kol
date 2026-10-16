@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI KOL 角色名冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: casting-agency roster — a contact sheet of comp cards; each card opens a full talent sheet (side sheet on desktop, bottom sheet on phone). */
+:root{
+  --bg:#ECEEEC; --surface:#FFFFFF; --ink:#16181B; --muted:#5B6265; --line:#D3D7D5;
+  --accent:#2B47C9; --accent-soft:#E3E8FB; --warn:#A8501A; --warn-soft:#F7E6DA; --ok:#2F6B45; --ok-soft:#DFEEE4;
+  --scrim:rgba(18,20,24,.55);
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121417; --surface:#1B1E22; --ink:#ECEEEC; --muted:#A3AAAD; --line:#2E3338;
+  --accent:#8EA2FF; --accent-soft:#232B4D; --warn:#F0A877; --warn-soft:#3A2618; --ok:#8CCB9F; --ok-soft:#1C3324;
+  --scrim:rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121417; --surface:#1B1E22; --ink:#ECEEEC; --muted:#A3AAAD; --line:#2E3338;
+  --accent:#8EA2FF; --accent-soft:#232B4D; --warn:#F0A877; --warn-soft:#3A2618; --ok:#8CCB9F; --ok-soft:#1C3324;
+  --scrim:rgba(0,0,0,.7); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;padding-inline:clamp(16px,4vw,48px);padding-block:32px 64px}
+.wrap{max-width:1240px;margin-inline:auto;display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.top{display:grid;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:22px}
+header.top h1{font-size:clamp(30px,5vw,52px);font-weight:900;letter-spacing:.02em}
+header.top p{margin:0;max-width:62ch;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.facts b{font-weight:500;color:var(--ink)}
+.facts span{color:var(--muted)}
+
+/* filters */
+.bar{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center}
+.group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.group .lbl{font-size:12px;color:var(--muted);margin-right:4px;letter-spacing:.06em}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible,.card:focus-visible,.close:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+
+/* roster grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:22px 18px}
+.card{all:unset;cursor:pointer;display:grid;gap:10px;align-content:start;min-width:0}
+.photo{position:relative;aspect-ratio:3/4;max-width:100%;overflow:hidden;background:var(--line)}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block;transition:transform .5s ease}
+.card:hover .photo img{transform:scale(1.035)}
+.code{position:absolute;left:0;top:0;background:var(--surface);color:var(--ink);font-family:var(--mono);font-size:12px;padding:3px 8px;letter-spacing:.06em}
+.flag{position:absolute;right:8px;bottom:8px;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-weight:700}
+.meta{display:grid;gap:2px;min-width:0}
+.meta .name{font-family:var(--display);font-weight:600;font-size:18px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.meta .name small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}
+.meta .tag{font-size:13.5px;color:var(--ink)}
+.meta .ta{font-size:12.5px;color:var(--muted)}
+.empty{color:var(--muted);padding:40px 0}
+
+/* strategy */
+section.strat{display:grid;gap:22px;border-top:2px solid var(--ink);padding-top:26px}
+section.strat h2{font-size:clamp(24px,3.4vw,34px);font-weight:900}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px 32px}
+.cols article{display:grid;gap:8px;align-content:start;min-width:0}
+.cols h3{font-size:18px}
+.cols p,.cols ul{margin:0;color:var(--ink)}
+.cols ul{padding-left:1.1em;display:grid;gap:4px}
+.matrix-wrap{overflow-x:auto}
+table.matrix{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+.matrix th,.matrix td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+.matrix th{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--muted);letter-spacing:.06em}
+.matrix td button{all:unset;cursor:pointer;color:var(--accent);font-weight:500;margin-right:10px;white-space:nowrap}
+.matrix td button:focus-visible{outline:2px solid var(--accent)}
+
+/* talent sheet */
+dialog{border:none;padding:0;background:var(--surface);color:var(--ink);max-width:min(980px,100vw);width:100%;max-height:100dvh;margin-right:0;height:100dvh}
+dialog::backdrop{background:var(--scrim)}
+.sheet{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);height:100%}
+.sheet .side{position:relative;background:var(--line)}
+.sheet .side img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.sheet .main{overflow-y:auto;padding:28px clamp(18px,3vw,36px) 48px;display:grid;gap:22px;align-content:start;min-width:0}
+.close{position:sticky;top:0;justify-self:end;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer;z-index:2}
+.sheet h2{font-size:clamp(28px,4vw,40px);font-weight:900}
+.sheet .lead{font-size:17px;margin:0}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border-top:1px solid var(--line)}
+.specs div{border-bottom:1px solid var(--line);padding:9px 0;padding-right:12px;min-width:0}
+.specs dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.specs dd{margin:0;font-size:14px}
+.blk{display:grid;gap:8px;min-width:0}
+.blk h3{font-size:16px;font-family:var(--body);font-weight:700;letter-spacing:.04em}
+.blk p{margin:0}
+.blk ul{margin:0;padding-left:1.1em;display:grid;gap:5px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:12.5px;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+.pill.no{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.hook{border-left:3px solid var(--accent);padding:6px 0 6px 14px;font-size:15px}
+.hook small{display:block;font-size:12px;color:var(--muted)}
+.status{font-size:13px;padding:10px 14px;border-radius:6px}
+.status.ok{background:var(--ok-soft);color:var(--ok)}
+.status.warn{background:var(--warn-soft);color:var(--warn)}
+@media (max-width:760px){
+  dialog{margin:auto 0 0;height:92dvh;border-radius:14px 14px 0 0}
+  .sheet{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow-y:auto}
+  .sheet .side{height:46dvh}
+  .sheet .main{overflow:visible;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px}
+  .meta .name{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){.photo img{transition:none}.card:hover .photo img{transform:none}}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{margin:0}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">TW AI UGC · KOL Roster · v3 · 2026-10-16</div>
+    <h1>AI KOL 角色名冊</h1>
+    <p>16 位可長期營運的 AI 虛擬 KOL，依網路廣告常見 TA 分配。好看程度定在「系上公認好看」：亮眼，但不做成明星臉或網紅臉。點任何一張卡，看角色定位、適配產品與經營策略。</p>
+    <div class="facts">
+      <span><b>16</b> 位角色</span><span><b>8</b> 女 · <b>8</b> 男</span><span>年齡 <b>20–60</b> 歲</span><span>定裝照模型 <b>Nano Banana Pro</b></span><span>待重生 <b id="redo-n">0</b> 位</span>
+    </div>
+  </header>
+
+  <div class="bar" role="toolbar" aria-label="篩選角色">
+    <div class="group" data-key="g"><span class="lbl">性別</span>
+      <button class="chip" data-v="all" aria-pressed="true">全部</button>
+      <button class="chip" data-v="F" aria-pressed="false">女</button>
+      <button class="chip" data-v="M" aria-pressed="false">男</button>
+    </div>
+    <div class="group" data-key="a"><span class="lbl">年齡層</span>
+      <button class="chip" data-v="all" aria-pressed="true">全部</button>
+      <button class="chip" data-v="z" aria-pressed="false">18–24</button>
+      <button class="chip" data-v="y" aria-pressed="false">25–34</button>
+      <button class="chip" data-v="m" aria-pressed="false">35–49</button>
+      <button class="chip" data-v="s" aria-pressed="false">50+</button>
+    </div>
+    <div class="group" data-key="c"><span class="lbl">品類</span>
+      <button class="chip" data-v="all" aria-pressed="true">全部</button>
+      <button class="chip" data-v="food" aria-pressed="false">食品飲料</button>
+      <button class="chip" data-v="beauty" aria-pressed="false">美妝保養</button>
+      <button class="chip" data-v="health" aria-pressed="false">保健</button>
+      <button class="chip" data-v="tech" aria-pressed="false">3C 遊戲</button>
+      <button class="chip" data-v="fin" aria-pressed="false">金融保險</button>
+      <button class="chip" data-v="home" aria-pressed="false">家電居家</button>
+      <button class="chip" data-v="sport" aria-pressed="false">運動戶外</button>
+      <button class="chip" data-v="car" aria-pressed="false">汽機車</button>
+    </div>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="strat" aria-labelledby="s-h">
+    <div class="eyebrow">Strategy</div>
+    <h2 id="s-h">整體經營策略</h2>
+    <div class="cols">
+      <article><h3>顏值怎麼用</h3>
+        <p>研究顯示代言人的吸引力只在「跟外貌有關」的品類加分（配對假說）。同性觀眾看到太好看的代言人，興趣反而下降。</p>
+        <ul><li>美妝、服飾、保養：放大顏值，用 F8、F2、F5。</li><li>食品、3C、金融：顏值當入場券，靠人設與生活感說服。</li><li>每個角色固定 1 個小辨識記號（虎牙、酒窩、淚痣、眼鏡），讓觀眾記得是同一個人。</li></ul>
+      </article>
+      <article><h3>長期連載，不做一次性代言</h3>
+        <p>每位角色都有一條跑得完的故事線：F1 練半馬、M1 考正式教師、M2 存錢買房、F6 退休旅行。廣告素材掛在連載中間，比單支業配可信。</p>
+        <ul><li>平時 7 成生活內容，3 成商品內容。</li><li>同一角色同一品類不同時接競品。</li></ul>
+      </article>
+      <article><h3>角色互相串門子</h3>
+        <p>讓角色之間有關係，觀眾追一個會看到另一個，帳號互相導流。</p>
+        <ul><li>F4 × M4 設定為同一個家庭（新手爸媽）。</li><li>F1 × M1 同一個河濱跑團。</li><li>M8 料理人的店是 F2、M2 的週末咖啡與早午餐據點。</li><li>F6 是 F4 的媽媽輩鄰居，可做跨世代保健題材。</li></ul>
+      </article>
+      <article><h3>公開是 AI，靠內容贏</h3>
+        <p>Instagram 已開始限制沒有標示的 AI 人物帳號觸及，TikTok 也要求標示擬真 AI 人物。長期帳號一律在帳號層級公開是 AI 角色。去 AI 化是品質目標：讓觀眾在知道之後仍然覺得自然、討喜。上線標示依法遵檢查層與法務確認。</p>
+      </article>
+      <article><h3>測試節奏</h3>
+        <ul><li>每個商品先挑 2 位角色 × 2 條訴求 × 3 個開場，共 12 支。</li><li>贏的訴求加角色與開場變體，輸的整條砍掉。</li><li>每月比較各角色在同品類的 CTR 與完播率，表現墊底的角色調整造型或人設，連續兩季墊底就下架。</li></ul>
+      </article>
+      <article><h3>年齡與品類限制</h3>
+        <ul><li>TikTok 酒類廣告不得出現看起來未滿 25 歲的人：F3、M3 不接酒類。</li><li>保健食品在 Meta 須鎖 18 歲以上受眾。</li><li>美妝保養與保健只講體驗與使用感，不講療效。</li><li>新手爸媽角色的畫面不生成小孩，只放嬰兒用品。</li></ul>
+      </article>
+    </div>
+
+    <h3 style="font-size:18px">品類 × 角色對照</h3>
+    <div class="matrix-wrap">
+      <table class="matrix"><thead><tr><th>品類</th><th>主推角色</th><th>備選</th><th>為什麼</th></tr></thead><tbody id="matrix"></tbody></table>
+    </div>
+  </section>
+
+  <footer>定裝照為 AI 生成，角色皆為虛構人物，與任何真實人物無關。研究依據：research/tw-attractive-persona.md、deai-image-prompt.md、deai-video-prompt.md。法規相關內容為事實整理，上線前請法務確認。</footer>
+</div>
+
+<dialog id="sheet" aria-labelledby="d-name"></dialog>
+
+<script>
+const K = [
+ {c:"F1",n:"林語晴",age:25,g:"F",a:"y",city:"台中長大，住台北中山",job:"行銷企劃",cats:["food","beauty","sport"],
+  tag:"笑起來很有感染力的跑團女孩",ta:"18–30 歲女性、20–35 歲男性",
+  pos:"親和力最強的入門角色。觀眾第一眼覺得可愛，第二眼覺得像自己的朋友。適合需要「好感＋分享欲」的平價商品。",
+  look:"笑容、氣色、空氣瀏海",mark:"右上虎牙微突（笑才看到）",mst:"MST 3 暖調",
+  fit:["手搖飲","零食","平價保養","運動用品","生活雜貨","超商新品"],avoid:["精品","理財","抗老保養"],
+  pillars:["上班日常與下班吃什麼","河濱跑團紀錄","台中人在台北的反差"],
+  arc:"從半馬菜鳥練到第一場半馬完賽，約 6 個月一個完整弧線，可以接運動飲料、跑鞋、防曬。",
+  hooks:[["我練跑三個月，最難的根本不是跑步","運動品類"],["下班後這杯是我唯一的獎勵","手搖飲、零食"]],
+  plat:"IG Reels、TikTok、Threads",note:"甜美型最容易被模型「美化」成大眼尖下巴，每次重生都要對照驗收表。穿搭維持運動休閒，不走性感路線。",status:"ok"},
+ {c:"F2",n:"許以安",age:30,g:"F",a:"y",city:"台北大安老公寓",job:"UX 設計師",cats:["beauty","tech","fin","home"],
+  tag:"安靜、有品味、講話慢慢的知性型",ta:"25–40 歲女性",
+  pos:"可信度最高的女性角色。說話節奏慢、會先想一下才回答，適合需要「理性說服」的商品：成分、規格、長期使用。",
+  look:"骨相、氣質、單眼皮淡顏",mark:"右眼下淚痣",mst:"MST 2 冷調",
+  fit:["成分保養","香氛","3C","理財保險","線上課程","咖啡器材","居家選物"],avoid:["速食","電競"],
+  pillars:["成分黨保養筆記","獨居生活選物","工作倦怠與自我整理"],
+  arc:"老公寓自己改造，一個房間一個房間做完。每集自然帶到家電、家具、香氛。",
+  hooks:[["我買保養品只看一件事","成分保養"],["一個人住了五年，這三樣東西我真的每天用","居家、小家電"]],
+  plat:"IG、Threads、YouTube Shorts",note:"清冷感在影片裡容易變成面無表情，影片 prompt 要指定眼睛先笑的微表情。",status:"ok"},
+ {c:"M1",n:"陳品睿",age:27,g:"M",a:"y",city:"高雄人，住台北",job:"國小體育老師、團課教練",cats:["food","sport"],
+  tag:"大笑起來很陽光的暖男",ta:"20–35 歲女性、18–30 歲男性",
+  pos:"能量最高的男性角色，女性觀眾的好感與男性觀眾的「想變成他」兼具。適合運動、戶外、需要活力感的商品。",
+  look:"身形、大笑、短髮",mark:"笑時只有右頰酒窩",mst:"MST 3–4 小麥膚",
+  fit:["運動飲料","機能服飾","戶外露營","手搖飲","速食","男性清潔"],avoid:["美白保養","精品"],
+  pillars:["上課趣事（不拍學生臉）","自煮便當","週末登山露營"],
+  arc:"代課老師考正式教師的甄試之路，一年一個循環，觀眾會想看他考上。",
+  hooks:[["當體育老師最怕的不是學生，是中午","便當、食品"],["爬山我只帶這三樣","戶外用品"]],
+  plat:"IG Reels、TikTok、YouTube Shorts",note:"教師人設涉及校園，畫面不出現學生正臉，不生成兒童。",status:"ok"},
+ {c:"M2",n:"周以哲",age:32,g:"M",a:"y",city:"新竹人，住台北",job:"資料分析師",cats:["tech","fin","home","food"],
+  tag:"戴細金框眼鏡、養橘貓的斯文男",ta:"25–40 歲男女",
+  pos:"「理性但溫柔」的男性角色。男生覺得他懂、女生覺得他可靠。適合 3C、家電、金融這類需要講規格與 CP 值的商品。",
+  look:"髮型、眼鏡、氣質",mark:"細金框圓眼鏡、左下顎小痣",mst:"MST 2 中性",
+  fit:["3C 周邊","咖啡器材","男性保養","理財保險","家電","寵物用品"],avoid:["速食","運動營養"],
+  pillars:["桌面配置與效率工具","手沖咖啡筆記","橘貓日常"],
+  arc:"存錢買第一間房：預算、看房、裝修，自然帶出金融、家電、家具。",
+  hooks:[["我用試算表算過，這個真的比較划算","家電、3C"],["我家貓只認這一款","寵物用品"]],
+  plat:"IG、Threads、YouTube Shorts",note:"與素人庫 TW-02（工程師黑框眼鏡）定位接近，同品類不要同檔期派工。眼鏡是影片容易漂移的部位。",status:"ok"},
+ {c:"F3",n:"吳芊妤",age:20,g:"F",a:"z",city:"台北，大學宿舍",job:"傳播系大二",cats:["food","beauty","tech"],
+  tag:"宿舍開箱與飲料評比的女大生",ta:"18–24 歲女性、大學生",
+  pos:"Z 世代入口角色。內容節奏快、敢講真心話，適合開學季、平價美妝、手搖飲、超商新品。",
+  look:"大眼笑容、年輕氣色",mark:"上唇右上方小痣",mst:"MST 2 暖調",
+  fit:["手搖飲","平價美妝","手遊","追劇平台","零食","超商"],avoid:["酒類","保健食品","金融"],
+  pillars:["宿舍生活","手搖飲與超商新品評比","期中期末求生"],
+  arc:"大二到畢業的校園四季：開學、社團、實習、畢業，配合開學季與畢業季檔期。",
+  hooks:[["室友說我這樣喝會被罵，但真的好喝","手搖飲"],["月底只剩三百塊的晚餐","超商、零食"]],
+  plat:"TikTok、IG Reels",note:"外觀未滿 25 歲：不接酒類，TikTok 25+ 限制品類不派。定裝照上唇的痣偏明顯，重生時改淡。",status:"warn",fix:"唇上痣太明顯，重生時改成更小更淡。"},
+ {c:"M3",n:"黃宥廷",age:21,g:"M",a:"z",city:"台中",job:"資工系大三、兼職手遊實況",cats:["tech","food"],
+  tag:"打電動很強、講話有梗的男大生",ta:"18–24 歲男性、遊戲玩家",
+  pos:"遊戲與 3C 的 Z 世代代言人。男生觀眾接受度高，女生觀眾覺得可愛。",
+  look:"中分瀏海、少年感",mark:"左眉尾小疤",mst:"MST 3",
+  fit:["手遊","電競周邊","3C","球鞋","手搖飲","平價服飾"],avoid:["酒類","保健食品","精品"],
+  pillars:["新遊戲首玩反應","宿舍電競桌","球場鬥牛"],
+  arc:"從課餘實況主到接第一個品牌合作，觀眾陪他「長大」。",
+  hooks:[["這隻角色我抽了 80 抽才中","手遊"],["耳機我換了五副，最後留這副","3C 周邊"]],
+  plat:"TikTok、YouTube Shorts、Twitch 剪輯",note:"外觀未滿 25 歲：不接酒類。螢幕畫面一律模糊處理，不生成真實遊戲畫面。",status:"ok"},
+ {c:"F4",n:"蔡佳穎",age:32,g:"F",a:"y",city:"新北淡水",job:"前銀行行員，育嬰假中",cats:["food","health","home"],
+  tag:"溫柔、做菜很快的新手媽媽",ta:"28–40 歲女性、家庭主要採購者",
+  pos:"家庭採購的決策者角色。媽媽社群最在意「真的有在用」，她的可信度來自日常細節。",
+  look:"溫柔氣色、低丸子頭",mark:"笑時左頰酒窩",mst:"MST 2",
+  fit:["母嬰用品","保健食品","小家電","料理食材","清潔用品","親子旅遊"],avoid:["電競","酒類"],
+  pillars:["十分鐘家常菜","育嬰好物","重返職場的準備"],
+  arc:"育嬰假到重返職場的一年，與 M4 是同一個家庭，兩個帳號互相出現。",
+  hooks:[["寶寶睡著的二十分鐘，我只夠做這道","食材、小家電"],["當媽之後我只留這三瓶","清潔、保養"]],
+  plat:"IG、Facebook、YouTube Shorts",note:"畫面不生成小孩。這張定裝照窗外是美式郊區、插座也是美規，需重生。",status:"warn",fix:"場景跑成美國郊區（窗外獨棟房、美規插座），要重生。"},
+ {c:"M4",n:"李承翰",age:35,g:"M",a:"m",city:"桃園",job:"機械工程師、兩歲孩子的爸爸",cats:["car","fin","home","health"],
+  tag:"週末在家組家具的可靠爸爸",ta:"30–45 歲男性、雙薪家庭",
+  pos:"「可靠」型男性角色。爸爸族群會在他身上看到自己，媽媽族群覺得他是理想隊友。適合高單價、需要家庭決策的商品。",
+  look:"短鬍渣、笑紋",mark:"右太陽穴小痣",mst:"MST 3",
+  fit:["汽車","保險","家電","親子旅遊","男性保健","居家修繕"],avoid:["美妝","手遊"],
+  pillars:["週末 DIY","親子出遊路線","爸爸的車上好物"],
+  arc:"和 F4 同一個家庭：換車、買保險、規劃第一次全家出國。",
+  hooks:[["換車前我老婆只問了一個問題","汽車"],["週末三小時，我把客廳變成遊戲區","居家修繕"]],
+  plat:"Facebook、YouTube Shorts、IG",note:"不生成小孩。定裝照太陽穴的痣偏明顯，重生時改淡。",status:"warn",fix:"太陽穴的痣太明顯，改淡即可。"},
+ {c:"F5",n:"鄭婉如",age:42,g:"F",a:"m",city:"台北",job:"外商行銷總監",cats:["beauty","health","fin","home"],
+  tag:"保養得很好的優雅職場前輩",ta:"35–50 歲女性、高可支配所得",
+  pos:"高單價與抗老品類的主力。她的說服力來自「看起來就是有在保養」，同齡觀眾的向上比較不會太刺眼。",
+  look:"骨相、俐落鮑伯頭、自信笑容",mark:"左顴骨小痣",mst:"MST 2 暖調",
+  fit:["抗老保養","保健食品","精品","理財保險","高端家電","旅遊"],avoid:["手搖飲","電競"],
+  pillars:["40 歲後的保養與作息","職場與家庭的平衡","一個人的旅行"],
+  arc:"從總監到自己創業的轉換期，帶出理財、保險、自我投資。",
+  hooks:[["四十歲之後，我只在這件事上花錢","抗老保養"],["開完一整天會，我晚上一定做這件事","保健、香氛"]],
+  plat:"IG、Facebook",note:"抗老保養只講使用感，不講除皺等療效。",status:"ok"},
+ {c:"M5",n:"王志遠",age:45,g:"M",a:"m",city:"台北內湖",job:"科技業業務總監",cats:["car","fin","health"],
+  tag:"週末騎公路車的帥大叔",ta:"35–55 歲男性、主管階層",
+  pos:"高單價男性品類的主力。男性觀眾看到的是「40 歲後還能這樣」，信任來自他的成就感與體態。",
+  look:"灰白鬢角、體態",mark:"右眼下小痣",mst:"MST 3",
+  fit:["汽車","理財","保險","男性保健","高爾夫","威士忌","商務 3C"],avoid:["手搖飲","平價美妝"],
+  pillars:["40 歲後的體能","車與通勤","投資與退休規劃"],
+  arc:"準備人生第一場百K騎乘，從體檢、訓練到完騎，帶出保健與裝備。",
+  hooks:[["四十五歲，我體檢報告上最怕看到的一行","男性保健"],["我開了十年車，這次換車只看三件事","汽車"]],
+  plat:"Facebook、YouTube、LinkedIn",note:"酒類素材須鎖 25 歲以上並附警語；保健只講習慣，不講療效。",status:"ok"},
+ {c:"F6",n:"劉美惠",age:58,g:"F",a:"s",city:"台中",job:"退休高中英文老師",cats:["health","fin","home"],
+  tag:"看起來比實際年輕十歲的氣質阿姨",ta:"50–65 歲女性，以及幫爸媽買東西的子女",
+  pos:"銀髮與保健品類的主力。同齡觀眾覺得親切，子女輩看到會想到自己的媽媽，兩代都買得動。",
+  look:"笑紋、俐落短髮、親切",mark:"右太陽穴淡斑、老花眼鏡掛繩",mst:"MST 2 暖調",
+  fit:["保健食品（葉黃素、鈣、關節）","旅遊","保險","健康家電","銀髮服飾"],avoid:["手遊","速食"],
+  pillars:["退休後的日常作息","國標舞課與旅行","跟女兒的對話"],
+  arc:"退休第一年的全台旅行計畫，每站帶出眼睛、關節、體力相關的保健話題。",
+  hooks:[["退休之後我才發現，眼睛最累","葉黃素"],["我女兒寄來的那箱東西，我後來自己回購了","保健、送禮"]],
+  plat:"Facebook、LINE、YouTube",note:"保健只講作息與使用習慣，不講改善或預防。",status:"ok"},
+ {c:"M6",n:"張文雄",age:60,g:"M",a:"s",city:"台南",job:"退休土木工程師",cats:["health","fin","sport"],
+  tag:"騎車環島的健朗阿伯",ta:"50–65 歲男性、退休族",
+  pos:"「健康退休」的榜樣角色。同齡男性最在意的是體力與不麻煩子女，他的形象正好回答這兩件事。",
+  look:"曬過的膚色、灰髮、大笑",mark:"左頰小痣、灰色小鬍子",mst:"MST 4",
+  fit:["保健食品（關節、葉黃素、護肝）","旅遊","退休理財","保險","戶外用品"],avoid:["美妝","手遊"],
+  pillars:["單車環島紀錄","陽台種菜","退休理財心得"],
+  arc:"60 歲單車環島，一站一集，自然帶到體力、關節與裝備。",
+  hooks:[["六十歲環島，我最擔心的不是腳","關節保健"],["退休第一年，我把存款分成三份","退休理財"]],
+  plat:"Facebook、LINE、YouTube",note:"定裝照陽台背景偏歐洲公寓，可用但建議重生成台灣公寓陽台（鐵窗、冷氣室外機）。",status:"warn",fix:"背景像歐洲公寓，建議重生換成台灣陽台。"},
+ {c:"F7",n:"楊芷涵",age:28,g:"F",a:"y",city:"台北",job:"私人健身教練",cats:["sport","food","health"],
+  tag:"笑起來很親切的健身教練",ta:"20–40 歲運動健身族群",
+  pos:"運動營養與機能服飾的專業角色。專業感讓推薦更有說服力，親切感讓新手不怕。",
+  look:"高馬尾、運動後氣色",mark:"鼻樑淡雀斑、右頰酒窩",mst:"MST 3",
+  fit:["高蛋白","運動營養","機能服飾","運動鞋","健身器材","運動飲料"],avoid:["速食","酒類"],
+  pillars:["新手訓練菜單","備餐與蛋白質","學員蛻變（以文字敘述）"],
+  arc:"準備健體比賽或教練證照進修，帶出營養品與裝備。",
+  hooks:[["新手最常問我的一個問題","運動營養"],["我帶學員第一堂課，一定先做這件事","健身器材"]],
+  plat:"IG Reels、TikTok、YouTube Shorts",note:"運動營養只講補充與習慣，不講減脂、增肌等功效保證。",status:"ok"},
+ {c:"F8",n:"何映彤",age:26,g:"F",a:"y",city:"台北",job:"自由接案彩妝師",cats:["beauty"],
+  tag:"自己就是作品的彩妝師",ta:"18–35 歲女性、美妝重度使用者",
+  pos:"唯一允許「放大顏值」的角色。美妝是吸引力相關品類，她的臉本身就是說服力。",
+  look:"精緻妝感、長捲髮",mark:"左眼下小痣",mst:"MST 2 中性",
+  fit:["彩妝","保養","香水","美髮","美甲"],avoid:["3C","金融","汽車"],
+  pillars:["真實試色與比較","新娘妝現場","平價替代品"],
+  arc:"從接案彩妝師到開自己的工作室，帶出工具、保養與品牌合作。",
+  hooks:[["新娘妝最怕的不是脫妝","彩妝"],["我自己用了三瓶才敢推","保養"]],
+  plat:"IG Reels、TikTok、YouTube Shorts",note:"不講美白、除皺等需字號的宣稱。試色必須實拍商品，不生成。",status:"ok"},
+ {c:"M7",n:"林冠宇",age:25,g:"M",a:"y",city:"新北",job:"辦公用品業務，入職第一年",cats:["car","tech","fin","food"],
+  tag:"機車通勤、很會講幹話的菜鳥業務",ta:"22–30 歲男性、社會新鮮人",
+  pos:"社會新鮮人的代言人。觀眾看到的是自己第一年上班的樣子，適合入門級、看 CP 值的商品。",
+  look:"短瀏海、大笑",mark:"下唇左下小痣",mst:"MST 3",
+  fit:["機車","能量飲","手機","平價服飾","信用卡","速食","求職平台"],avoid:["精品","抗老保養"],
+  pillars:["菜鳥業務日常","機車通勤","第一份薪水怎麼花"],
+  arc:"從菜鳥到第一次拿業績獎金，帶出信用卡、機車、手機換機。",
+  hooks:[["第一份薪水入帳，我先做了這件事","信用卡、理財"],["每天騎車四十分鐘，雨衣我換了三件","機車用品"]],
+  plat:"TikTok、IG Reels、Threads",note:"定裝照背景像新加坡組屋，需重生成台灣公寓玄關。",status:"warn",fix:"背景像新加坡組屋，要重生。"},
+ {c:"M8",n:"謝秉諺",age:30,g:"M",a:"y",city:"台中",job:"小酒館主廚",cats:["food","home"],
+  tag:"十分鐘做出一道菜的型男主廚",ta:"25–50 歲家庭料理與美食族群",
+  pos:"食品與料理品類的主力，男女觀眾都吃。主廚身分讓推薦食材與廚具有專業背書。",
+  look:"短鬍、笑容、圍裙",mark:"左手背燙傷小疤",mst:"MST 3",
+  fit:["食材","調味料","廚具","小家電","餐廳","吃到飽","生鮮電商","食譜平台"],avoid:["美妝","金融"],
+  pillars:["忙人十分鐘料理","主廚私房調味","探店與吃到飽攻略"],
+  arc:"從小酒館到開第二家店，帶出食材供應、廚具與餐飲合作。",
+  hooks:[["主廚自己在家煮，只用這三種調味","調味料"],["吃到飽我只拿這幾區，才吃得回本","餐廳、吃到飽"]],
+  plat:"IG Reels、YouTube Shorts、Facebook",note:"食品只講口感與做法，不講保健功效。調味料瓶身要實拍。",status:"ok"}
+];
+const CAT = {food:"食品飲料",beauty:"美妝保養",health:"保健",tech:"3C 遊戲",fin:"金融保險",home:"家電居家",sport:"運動戶外",car:"汽機車"};
+const MATRIX = [
+ ["手搖飲、零食、超商","F1、F3","M1、M7","年輕、分享欲強、價格低，靠好感與有梗的開場"],
+ ["美妝、彩妝","F8","F1、F3","吸引力相關品類，可以放大顏值"],
+ ["保養（成分、抗老）","F2、F5","F8","需要可信度與理性說服，同齡比較不刺眼"],
+ ["保健食品","F6、M5","F4、M6","銀髮自用加上子女代買，兩代都要打到"],
+ ["3C、家電","M2、F2","M3、M4","講規格與 CP 值，理性型角色說服力最高"],
+ ["手遊、電競","M3","F3","Z 世代真實玩家感"],
+ ["汽車、機車","M4、M5","M7","家庭決策、主管換車、新鮮人通勤三種需求"],
+ ["金融、保險、理財","M2、F5","M4、M6、M7","依人生階段分配：買房、創業、成家、退休、第一份薪水"],
+ ["運動營養、機能服飾","F7、M1","F1","專業背書加上活力形象"],
+ ["食材、廚具、餐飲","M8","F4","主廚專業與家庭日常兩條路線"],
+ ["母嬰、清潔、親子","F4","M4","同一個家庭，兩個視角"]
+];
+const $ = s => document.querySelector(s);
+const state = {g:"all",a:"all",c:"all"};
+const img = k => `img/${k}.jpg`;
+$("#redo-n").textContent = K.filter(k=>k.status==="warn").length;
+
+function render(){
+  const list = K.filter(k=>(state.g==="all"||k.g===state.g)&&(state.a==="all"||k.a===state.a)&&(state.c==="all"||k.cats.includes(state.c)));
+  $("#count").textContent = `顯示 ${list.length} / ${K.length}`;
+  $("#grid").innerHTML = list.length ? list.map(k=>`
+    <button class="card" data-c="${k.c}" aria-label="${k.n}，${k.tag}，查看定位與策略">
+      <div class="photo"><img src="${img(k.c)}" alt="${k.n} 定裝照" loading="lazy"><span class="code">KOL-${k.c}</span>${k.status==="warn"?'<span class="flag">待重生</span>':""}</div>
+      <div class="meta"><div class="name">${k.n}<small>${k.age} 歲 · ${k.job}</small></div><div class="tag">${k.tag}</div><div class="ta">${k.ta}</div></div>
+    </button>`).join("") : `<p class="empty">沒有符合條件的角色，換一個篩選試試。</p>`;
+}
+document.querySelectorAll(".group").forEach(gr=>gr.addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  gr.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+  state[gr.dataset.key]=b.dataset.v; render();
+}));
+$("#grid").addEventListener("click",e=>{const b=e.target.closest(".card"); if(b) open(b.dataset.c);});
+
+const dlg = $("#sheet");
+function open(code){
+  const k = K.find(x=>x.c===code); if(!k) return;
+  dlg.innerHTML = `<div class="sheet">
+   <div class="side"><img src="${img(k.c)}" alt="${k.n} 定裝照"></div>
+   <div class="main">
+    <button class="close" id="close">關閉</button>
+    <div style="display:grid;gap:8px">
+      <div class="eyebrow">KOL-${k.c} · ${k.g==="F"?"女":"男"} · ${k.age} 歲</div>
+      <h2 id="d-name">${k.n}</h2>
+      <p class="lead">${k.tag}</p>
+    </div>
+    ${k.status==="warn"?`<div class="status warn">定裝照待重生：${k.fix}</div>`:`<div class="status ok">定裝照已通過，可進入下一步（多角度定裝照與 Kling element）。</div>`}
+    <dl class="specs">
+      <div><dt>職業</dt><dd>${k.job}</dd></div>
+      <div><dt>居住</dt><dd>${k.city}</dd></div>
+      <div><dt>主力 TA</dt><dd>${k.ta}</dd></div>
+      <div><dt>顏值主力</dt><dd>${k.look}</dd></div>
+      <div><dt>辨識記號</dt><dd>${k.mark}</dd></div>
+      <div><dt>膚色</dt><dd>${k.mst}</dd></div>
+    </dl>
+    <div class="blk"><h3>定位</h3><p>${k.pos}</p></div>
+    <div class="blk"><h3>適合的產品</h3><div class="pills">${k.fit.map(x=>`<span class="pill">${x}</span>`).join("")}</div>
+      <div class="pills">${k.avoid.map(x=>`<span class="pill no">不適合：${x}</span>`).join("")}</div></div>
+    <div class="blk"><h3>內容支柱</h3><ul>${k.pillars.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+    <div class="blk"><h3>長期故事線</h3><p>${k.arc}</p></div>
+    <div class="blk"><h3>開場範例</h3>${k.hooks.map(h=>`<div class="hook">「${h[0]}」<small>${h[1]}</small></div>`).join("")}</div>
+    <div class="blk"><h3>建議平台</h3><p>${k.plat}</p></div>
+    <div class="blk"><h3>注意事項</h3><p>${k.note}</p></div>
+   </div></div>`;
+  dlg.showModal();
+  $("#close").addEventListener("click",()=>dlg.close());
+  try{history.replaceState(null,"","#"+k.c)}catch(_){}
+}
+dlg.addEventListener("click",e=>{if(e.target===dlg) dlg.close();});
+dlg.addEventListener("close",()=>{try{history.replaceState(null,"",location.pathname+location.search)}catch(_){}});
+
+$("#matrix").innerHTML = MATRIX.map(r=>{
+  const btns = s => s.split("、").map(c=>{const k=K.find(x=>x.c===c);return `<button data-c="${c}">${c} ${k?k.n:""}</button>`}).join("");
+  return `<tr><td>${r[0]}</td><td>${btns(r[1])}</td><td>${btns(r[2])}</td><td>${r[3]}</td></tr>`;
+}).join("");
+$("#matrix").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) open(b.dataset.c);});
+
+render();
+const h = location.hash.slice(1); if(K.some(k=>k.c===h)) open(h);
+</script>
+
+</body>
+</html>
